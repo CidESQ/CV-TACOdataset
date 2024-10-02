@@ -1,0 +1,7 @@
+Info -> year, version, description, contributor, url, date_created
+images -> id, width, height, file_name, license, flickr_url, coco_url, date_captured, flickr_640_url
+Annotations -> id, image_id, category_id, segmentation -> ... , area, bbox -> ... , iscrowd
+scene_annotations -> image_id, backgroun_ids -> ...
+liceses -> 
+categories -> supercategory, id, name
+scene_categories -> id, name
