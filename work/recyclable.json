@@ -1,0 +1,110 @@
+{
+    "recyclable_categories_by_material": {
+        "Aluminium": [
+            {
+                "id": 0,
+                "name": "Aluminium foil"
+            },
+            {
+                "id": 2,
+                "name": "Aluminium blister pack"
+            }
+        ],
+        "Bottle": [
+            {
+                "id": 5,
+                "name": "Clear plastic bottle"
+            },
+            {
+                "id": 6,
+                "name": "Glass bottle"
+            }
+        ],
+        "Can": [
+            {
+                "id": 10,
+                "name": "Food Can"
+            },
+            {
+                "id": 11,
+                "name": "Aerosol"
+            },
+            {
+                "id": 12,
+                "name": "Drink can"
+            }
+        ],
+        "Carton": [
+            {
+                "id": 14,
+                "name": "Other carton"
+            },
+            {
+                "id": 15,
+                "name": "Egg carton"
+            },
+            {
+                "id": 16,
+                "name": "Drink carton"
+            },
+            {
+                "id": 17,
+                "name": "Corrugated carton"
+            },
+            {
+                "id": 18,
+                "name": "Meal carton"
+            },
+            {
+                "id": 19,
+                "name": "Pizza box"
+            }
+        ],
+        "Paper": [
+            {
+                "id": 33,
+                "name": "Normal paper"
+            },
+            {
+                "id": 34,
+                "name": "Paper bag"
+            }
+        ],
+        "Plastic bag & wrapper": [
+            {
+                "id": 36,
+                "name": "Plastic film"
+            },
+            {
+                "id": 41,
+                "name": "Polypropylene bag"
+            },
+            {
+                "id": 42,
+                "name": "Crisp packet"
+            }
+        ],
+        "Plastic container": [
+            {
+                "id": 43,
+                "name": "Spread tub"
+            },
+            {
+                "id": 44,
+                "name": "Tupperware"
+            }
+        ],
+        "Plastic utensils": [
+            {
+                "id": 49,
+                "name": "Plastic utensils"
+            }
+        ],
+        "Scrap metal": [
+            {
+                "id": 52,
+                "name": "Scrap metal"
+            }
+        ]
+    }
+}
