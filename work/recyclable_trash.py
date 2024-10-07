@@ -13,29 +13,27 @@ with open(anns_file_path, 'r') as f:
 
 recyclable_trash = [
     "Aluminium foil",
-    "Aluminium blister pack",
     "Clear plastic bottle",
     "Glass bottle",
-    "Food Can",
+    "Metal bottle cap",
     "Aerosol",
     "Drink can",
-    "Other carton",
-    "Egg carton",
-    "Drink carton",
+    "Food Can",
     "Corrugated carton",
-    "Meal carton",
-    "Pizza box",
+    "Egg carton",
+    "Toilet tube",
+    "Other carton",
+    "Glass jar",
+    "Metal lid",
     "Normal paper",
+    "Wrapping paper",
+    "Magazine paper",
     "Paper bag",
-    "Plastic film",
-    "Polypropylene bag",
-    "Crisp packet",
-    "Spread tub",
-    "Tupperware",
-    "Plastic utensils",
-    "Plastic straws",
-    "Paper straws",
-    "Scrap metal"
+    "Pop tab",
+    "Scrap metal",
+    "Paper straw",
+    "Plastic lid",
+    "Spread tub"
 ]
 
 filtered_categories = [

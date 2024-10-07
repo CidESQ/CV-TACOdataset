@@ -6,11 +6,6 @@
             "name": "Aluminium foil"
         },
         {
-            "supercategory": "Blister pack",
-            "id": 2,
-            "name": "Aluminium blister pack"
-        },
-        {
             "supercategory": "Bottle",
             "id": 5,
             "name": "Clear plastic bottle"
@@ -19,6 +14,11 @@
             "supercategory": "Bottle",
             "id": 6,
             "name": "Glass bottle"
+        },
+        {
+            "supercategory": "Bottle cap",
+            "id": 8,
+            "name": "Metal bottle cap"
         },
         {
             "supercategory": "Can",
@@ -37,6 +37,11 @@
         },
         {
             "supercategory": "Carton",
+            "id": 13,
+            "name": "Toilet tube"
+        },
+        {
+            "supercategory": "Carton",
             "id": 14,
             "name": "Other carton"
         },
@@ -47,23 +52,33 @@
         },
         {
             "supercategory": "Carton",
-            "id": 16,
-            "name": "Drink carton"
-        },
-        {
-            "supercategory": "Carton",
             "id": 17,
             "name": "Corrugated carton"
         },
         {
-            "supercategory": "Carton",
-            "id": 18,
-            "name": "Meal carton"
+            "supercategory": "Glass jar",
+            "id": 26,
+            "name": "Glass jar"
         },
         {
-            "supercategory": "Carton",
-            "id": 19,
-            "name": "Pizza box"
+            "supercategory": "Lid",
+            "id": 27,
+            "name": "Plastic lid"
+        },
+        {
+            "supercategory": "Lid",
+            "id": 28,
+            "name": "Metal lid"
+        },
+        {
+            "supercategory": "Paper",
+            "id": 30,
+            "name": "Magazine paper"
+        },
+        {
+            "supercategory": "Paper",
+            "id": 32,
+            "name": "Wrapping paper"
         },
         {
             "supercategory": "Paper",
@@ -76,39 +91,24 @@
             "name": "Paper bag"
         },
         {
-            "supercategory": "Plastic bag & wrapper",
-            "id": 36,
-            "name": "Plastic film"
-        },
-        {
-            "supercategory": "Plastic bag & wrapper",
-            "id": 41,
-            "name": "Polypropylene bag"
-        },
-        {
-            "supercategory": "Plastic bag & wrapper",
-            "id": 42,
-            "name": "Crisp packet"
-        },
-        {
             "supercategory": "Plastic container",
             "id": 43,
             "name": "Spread tub"
         },
         {
-            "supercategory": "Plastic container",
-            "id": 44,
-            "name": "Tupperware"
-        },
-        {
-            "supercategory": "Plastic utensils",
-            "id": 49,
-            "name": "Plastic utensils"
+            "supercategory": "Pop tab",
+            "id": 50,
+            "name": "Pop tab"
         },
         {
             "supercategory": "Scrap metal",
             "id": 52,
             "name": "Scrap metal"
+        },
+        {
+            "supercategory": "Straw",
+            "id": 56,
+            "name": "Paper straw"
         }
     ]
 }
