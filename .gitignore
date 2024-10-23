@@ -1,3 +1,4 @@
 data/batch_*
 .venv
-work/recyclable_images/batch_*
+._get_d_vectors.py
+.* 
