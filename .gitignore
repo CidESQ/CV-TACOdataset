@@ -1,4 +1,4 @@
 data/batch_*
 .venv
 ._get_d_vectors.py
-.* 
+._* 

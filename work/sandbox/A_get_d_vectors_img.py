@@ -5,11 +5,11 @@ import numpy as np
 import os
 import json
 
-# Deteccion de esquinas de Harris
+# Deteccion de esquinas de Harris e implementacion aproximada de MOPS usando SIFT para obtener los descriptores
 
-image_dir = '../../'
-# image_dir = '../subset/batch_1'
-output_file = '../subset/descriptors.json'
+# image_dir = '../../'
+image_dir = '../subset/batch_1'
+output_file = '../knowledge_base/descriptors.json'
 
 # Lista todas las imagenes en el directorio
 image_files = [f for f in os.listdir(image_dir) if f.endswith('.jpg')]
@@ -25,7 +25,7 @@ for image_file in image_files:
         continue
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray_harris = np.float32(gray)
-    
+
     #detecta las esquinas de Harris
     harris_corners = cv2.cornerHarris(gray_harris, blockSize=2, ksize=3, k=0.04)
     harris_corners = cv2.dilate(harris_corners, None)
@@ -39,7 +39,10 @@ for image_file in image_files:
     # Almacenar los descriptores en el diccionario
     if descriptors is not None:
         image_id = image_file #Aquí utilizar un mapeo con el archivo JSON principal si se utiliza
-        descriptors_dict[image_id] = descriptors.tolist() # Convertir los descriptores a una lista
+        descriptors_dict[image_id] = {
+            "file_name": img_path,
+            "descriptors": descriptors.tolist()
+        }
     
     # mostrar la imagen con las esquinas detectadas
     cv2.imshow('Harris Corners', img)
