@@ -2,3 +2,4 @@ data/batch_*
 .venv
 ._get_d_vectors.py
 ._* 
+work/knowledge_base/
