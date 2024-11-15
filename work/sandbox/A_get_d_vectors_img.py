@@ -5,9 +5,9 @@ import numpy as np
 import os
 import json
 
-# Deteccion de esquinas de Harris e implementacion aproximada de MOPS usando SIFT para obtener los descriptores
-image_dir = '../..'
-# image_dir = '../subset/batch_3'
+# Deteccion de esquinas de Harris e implementacion SIFT para obtener los descriptores
+# image_dir = '../..'
+image_dir = '../subset/batch_1'
 output_file = '../knowledge_base/descriptors.json'
 
 # Lista todas las imagenes en el directorio
