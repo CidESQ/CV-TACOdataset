@@ -8,7 +8,7 @@ import json
 # Deteccion de esquinas de Harris e implementacion SIFT para obtener los descriptores
 # image_dir = '../..'
 image_dir = '../subset/batch_1'
-output_file = '../knowledge_base/descriptors.json'
+output_file = '../knowledge_base/descriptors2.json'
 
 # Lista todas las imagenes en el directorio
 image_files = [f for f in os.listdir(image_dir) if f.endswith('.jpg') or f.endswith('.JPG')]

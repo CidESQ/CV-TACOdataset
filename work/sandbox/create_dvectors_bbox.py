@@ -4,9 +4,9 @@ import numpy as np
 import json
 
 # Directorios
-input_dir = '../subset/batch_n'  # Cambiado para usar solo la carpeta batch_*
-output_dir = '../knowledge_base'
-output_file = os.path.join(output_dir, "descriptors_batch_n.json")
+input_dir = '../subset/batch_1'  # Cambiado para usar solo la carpeta batch_01
+output_dir = '../knowledge_base/bbox_descriptors'
+output_file = os.path.join(output_dir, "descriptors.json")
 annotations_file = os.path.join('../subset', 'subset_annotations.json')
 
 # Crear carpeta de salida si no existe
@@ -16,20 +16,24 @@ os.makedirs(output_dir, exist_ok=True)
 with open(annotations_file, 'r') as f:
     annotations_data = json.load(f)
 
-# Crear un mapeo de image_id a categorías (supercategory y name)
+# Crear un mapeo de image_id a categorias (supercategory y name)
 image_metadata = {}
-for img in annotations_data["images"]: 
+for img in annotations_data["images"]:  # Cambiado "image" a "images"
     image_metadata[img["file_name"]] = {"image_id": img["id"]}
 
-# Agregar supercategory y name a cada imagen de image_metadata según la categoría
+# Crear un mapeo de id de categorías a su nombre y supercategoría
 category_mapping = {cat["id"]: {"supercategory": cat["supercategory"], "name": cat["name"]}
                     for cat in annotations_data["categories"]}
 
+# Crear un mapeo de image_id a bbox
+annotations_mapping = {}
+for ann in annotations_data["annotations"]:
+    annotations_mapping[ann["image_id"]] = ann["bbox"]  # Mapear bbox por image_id
+
 # Inicializar diccionario para almacenar los descriptores
 descriptors_dict = {}
-contador = 0
 
-# Listar imágenes en la carpeta batch_*
+# Listar imágenes en la carpeta batch_01
 image_files = [f for f in os.listdir(input_dir) if f.endswith('.jpg') or f.endswith('.JPG')]
 
 for image_file in image_files:
@@ -57,17 +61,23 @@ for image_file in image_files:
     # Almacenar los descriptores
     if descriptors is not None:
         metadata = image_metadata.get(image_file, {})
-        category_info = category_mapping.get(metadata.get("image_id"), {"supercategory": "unknown", "name": "unknown"})
         
-        descriptors_dict[image_file] = {
+        # Obtener la categoría usando el image_id
+        image_id = metadata.get("image_id")
+        category_info = category_mapping.get(image_id, {"supercategory": "unknown", "name": "unknown"})
+        
+        # Obtener el bbox correspondiente al image_id
+        bbox = annotations_mapping.get(image_id, [0, 0, 0, 0])  # Valor predeterminado en caso de error
+        
+        descriptors_dict[image_file] = {  # Se usa image_file como clave
             "file_name": img_path,
             "supercategory": category_info["supercategory"],
             "name": category_info["name"],
+            "bbox": bbox,  # Agregar el campo bbox
             "descriptors": descriptors.tolist()
         }
 
-    contador += 1
-    print(f'Procesada imagen {contador}: {image_file}')
+    print(f'Procesada imagen: {image_file}')
 
 # Guardar los descriptores en un archivo JSON
 with open(output_file, 'w') as json_file:
