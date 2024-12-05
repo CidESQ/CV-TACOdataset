@@ -20,7 +20,7 @@ search_params = dict(checks=50)
 flann = cv2.FlannBasedMatcher(index_params, search_params)
 
 # Leer la nueva imagen que se quiere clasificar
-new_image_path = "../test_images/IMG_4868.JPG"  # Cambia esta ruta a la imagen que desees clasificar
+new_image_path = "../test_images/IMG_4878.JPG"  # Cambia esta ruta a la imagen que desees clasificar
 new_image = cv2.imread(new_image_path)
 
 if new_image is None:
@@ -82,7 +82,7 @@ else:
                         if score < best_score:
                             best_score = score
                             best_match = image_name
-                            best_match_category = bbox_info.get("category", {"name": "Unknown"})['name']
+                            best_match_category = bbox_info.get("name", "Unknown")
 
         # Mostrar el resultado de la mejor coincidencia
         if best_match:
