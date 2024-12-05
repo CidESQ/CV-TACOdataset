@@ -20,7 +20,7 @@ search_params = dict(checks=50)
 flann = cv2.FlannBasedMatcher(index_params, search_params)
 
 # Leer la nueva imagen que se quiere clasificar
-new_image_path = "../test_images/000012.jpg"  #! Cambia esta ruta a la imagen que desees clasificar
+new_image_path = "../test_images/000005.JPG"  # Cambia esta ruta a la imagen que desees clasificar
 new_image = cv2.imread(new_image_path)
 
 if new_image is None:
@@ -49,12 +49,24 @@ else:
         # Realizar matching con los descriptores de la base de conocimiento
         for data in knowledge_data:
             for image_name, image_info in data.items():
-                for bbox_info in image_info.get("bboxes", [{"descriptors": image_info["descriptors"]}]):
+                # Obtener la lista de bboxes o los descriptores de la imagen completa
+                bboxes = image_info.get("bboxes", [])
+                if not bboxes and "descriptors" in image_info:
+                    bboxes = [{"descriptors": image_info["descriptors"]}]
+                
+                for bbox_info in bboxes:
                     # Obtener los descriptores de la base de conocimiento
+                    if "descriptors" not in bbox_info:
+                        continue
+                    
                     knowledge_descriptors = np.array(bbox_info["descriptors"], dtype=np.float32)
                     
+                    # Comprobar si hay suficientes descriptores para hacer knnMatch con k=2
+                    if len(knowledge_descriptors) < 2:
+                        continue
+                    
                     # Hacer matching con FLANN
-                    matches = flann.knnMatch(descriptors, knowledge_descriptors, k=2)
+                    matches = flann.knnMatch(descriptors, knowledge_descriptors, k=min(2, len(knowledge_descriptors)))
 
                     # Aplicar la prueba de ratio de Lowe para filtrar buenas coincidencias
                     good_matches = []
@@ -76,4 +88,3 @@ else:
             print(f"La mejor coincidencia es con la imagen '{best_match['image_name']}' de la categoría '{best_match['category']}' con {best_match['match_count']} coincidencias.")
         else:
             print("No se encontraron buenas coincidencias.")
-
