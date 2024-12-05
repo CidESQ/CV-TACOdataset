@@ -4,9 +4,9 @@ import numpy as np
 import json
 from pathlib import Path
 
-for a in range(3, 15 + 1):
+for a in range(1, 15 + 1):
     # Rutas de directorios
-    batch_dir = f"../subset/batch_{a}"  # Directorio donde están las imágenes del batch 1
+    batch_dir = f"../subset/batch_{a}"  # Directorio donde están las imágenes del batch
     annotations_file = "../subset/subset_annotations.json"  # Archivo de anotaciones en formato COCO
     knowledge_base_dir = "../knowledge_base"  # Carpeta para almacenar los archivos JSON de salida
 
@@ -20,7 +20,7 @@ for a in range(3, 15 + 1):
     # Obtener el mapeo de categorías para un acceso más sencillo
     categories = {category['id']: category for category in annotations['categories']}
 
-    #Iniciar el diccionario para almacenar la información del batch
+    # Iniciar el diccionario para almacenar la información del batch
     batch_data = {}
     j = 0
     # Procesar cada imagen en el directorio batch
@@ -37,7 +37,7 @@ for a in range(3, 15 + 1):
             print(f"No se pudo leer la imagen: {image_path}")
             continue
 
-    # Convertir a escala de grises
+        # Convertir a escala de grises
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         # Detectar esquinas de Harris
@@ -52,17 +52,20 @@ for a in range(3, 15 + 1):
         sift = cv2.SIFT_create()
         keypoints, descriptors = sift.detectAndCompute(harris_image_uint8, None)
 
-        # Extraer los campos supercategory y name de la categoría a la que pertenece la imagen
+        # Extraer las categorías asociadas a la imagen
         annotations_for_image = [ann for ann in annotations['annotations'] if ann['image_id'] == image_id]
-        category_info = categories[annotations_for_image[0]['category_id']] if annotations_for_image else None
-        supercategory = category_info['supercategory'] if category_info else "Unknown"
-        name = category_info['name'] if category_info else "Unknown"
+        categories_list = [
+            {
+                "supercategory": categories[ann['category_id']]['supercategory'],
+                "name": categories[ann['category_id']]['name']
+            }
+            for ann in annotations_for_image
+        ] if annotations_for_image else [{"supercategory": "Unknown", "name": "Unknown"}]
 
         # Preparar los datos a guardar en el JSON 
         batch_data[image_info['file_name']] = {
             "image_id": image_id,
-            "supercategory": supercategory,
-            "name": name,
+            "categories": categories_list,
             "descriptors": descriptors.tolist() if descriptors is not None else []
         }
         j += 1
@@ -70,7 +73,7 @@ for a in range(3, 15 + 1):
 
     # Guardar los resultados en un archivo JSON dentro de knowledge_base
     print(f'Imprimiendo archivo!')
-    output_file = os.path.join(knowledge_base_dir,f"descriptors_batch{a}.json")
+    output_file = os.path.join(knowledge_base_dir, f"descriptors_batch{a}.json")
     with open(output_file, 'w') as outfile:
         json.dump(batch_data, outfile, indent=4)
 
