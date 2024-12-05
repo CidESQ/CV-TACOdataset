@@ -9,7 +9,7 @@ knowledge_base_dir = "../knowledge_base"
 # Cargar todos los descriptores de la base de conocimiento
 knowledge_data = []
 for file_name in os.listdir(knowledge_base_dir):
-    if file_name.startswith("descriptores_batch") or file_name.startswith("descriptores_bbox_batch"):
+    if file_name.startswith("descriptores_bbox_batch"):  # Solo cargar los descriptores de bboxes
         with open(os.path.join(knowledge_base_dir, file_name), "r") as file:
             knowledge_data.append(json.load(file))
 
@@ -20,7 +20,7 @@ search_params = dict(checks=50)
 flann = cv2.FlannBasedMatcher(index_params, search_params)
 
 # Leer la nueva imagen que se quiere clasificar
-new_image_path = "../test_images/000005.JPG"  # Cambia esta ruta a la imagen que desees clasificar
+new_image_path = "../test_images/IMG_4868.JPG"  # Cambia esta ruta a la imagen que desees clasificar
 new_image = cv2.imread(new_image_path)
 
 if new_image is None:
@@ -29,7 +29,7 @@ else:
     # Convertir a escala de grises
     gray = cv2.cvtColor(new_image, cv2.COLOR_BGR2GRAY)
 
-    # Detectar esquinas de Harris
+    # Detectar esquinas de Harris con menor umbral para detectar más esquinas
     gray_harris = np.float32(gray)
     harris_corners = cv2.cornerHarris(gray_harris, blockSize=2, ksize=3, k=0.04)
     harris_corners = cv2.dilate(harris_corners, None)
@@ -44,47 +44,48 @@ else:
     if descriptors is not None:
         # Variable para almacenar la mejor coincidencia
         best_match = None
-        best_match_count = 0
+        best_score = float('inf')  # Puntuación más baja significa mejor coincidencia
+        best_match_category = "Unknown"
+        min_match_count = 10  # Umbral mínimo para considerar una coincidencia como válida
 
-        # Realizar matching con los descriptores de la base de conocimiento
+        # Realizar matching con los descriptores de los bboxes en la base de conocimiento
         for data in knowledge_data:
             for image_name, image_info in data.items():
-                # Obtener la lista de bboxes o los descriptores de la imagen completa
-                bboxes = image_info.get("bboxes", [])
-                if not bboxes and "descriptors" in image_info:
-                    bboxes = [{"descriptors": image_info["descriptors"]}]
-                
-                for bbox_info in bboxes:
-                    # Obtener los descriptores de la base de conocimiento
+                # Obtener los descriptores de cada bbox
+                for bbox_info in image_info.get("bboxes", []):
                     if "descriptors" not in bbox_info:
                         continue
-                    
+
                     knowledge_descriptors = np.array(bbox_info["descriptors"], dtype=np.float32)
-                    
+
                     # Comprobar si hay suficientes descriptores para hacer knnMatch con k=2
                     if len(knowledge_descriptors) < 2:
                         continue
-                    
+
                     # Hacer matching con FLANN
                     matches = flann.knnMatch(descriptors, knowledge_descriptors, k=min(2, len(knowledge_descriptors)))
 
                     # Aplicar la prueba de ratio de Lowe para filtrar buenas coincidencias
                     good_matches = []
                     for m, n in matches:
-                        if m.distance < 0.7 * n.distance:
+                        if m.distance < 0.8 * n.distance:  # Ratio de Lowe ajustado
                             good_matches.append(m)
 
-                    # Actualizar la mejor coincidencia si es necesario
-                    if len(good_matches) > best_match_count:
-                        best_match_count = len(good_matches)
-                        best_match = {
-                            "image_name": image_name,
-                            "category": image_info.get("categories", [{"name": "Unknown"}])[0]['name'],
-                            "match_count": len(good_matches)
-                        }
+                    # Calcular la puntuación basada en la suma de las distancias de las coincidencias
+                    if len(good_matches) >= min_match_count:
+                        score = sum([match.distance for match in good_matches]) / len(good_matches)
+
+                        # Depurar: Imprimir información sobre la cantidad de coincidencias encontradas y la puntuación
+                        print(f"Imagen: {image_name}, Coincidencias encontradas: {len(good_matches)}, Puntuación: {score}")
+
+                        # Actualizar la mejor coincidencia si es necesario
+                        if score < best_score:
+                            best_score = score
+                            best_match = image_name
+                            best_match_category = bbox_info.get("category", {"name": "Unknown"})['name']
 
         # Mostrar el resultado de la mejor coincidencia
         if best_match:
-            print(f"La mejor coincidencia es con la imagen '{best_match['image_name']}' de la categoría '{best_match['category']}' con {best_match['match_count']} coincidencias.")
+            print(f"La mejor coincidencia es con la imagen '{best_match}' de la categoría '{best_match_category}' con puntuación {best_score}.")
         else:
             print("No se encontraron buenas coincidencias.")
