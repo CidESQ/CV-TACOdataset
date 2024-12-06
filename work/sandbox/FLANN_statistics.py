@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 from pathlib import Path
 
+#Solo batch 1
+
 # Rutas
 subset_dir = "../subset"
 knowledge_base_dir = "../knowledge_base"
@@ -39,12 +41,12 @@ batch_num = 1
 batch_dir = os.path.join(subset_dir, f"batch_{batch_num}")
 
 # Procesar cada imagen en el directorio batch
-for image_info in annotations['images']:
-    if not image_info['file_name'].startswith(f"batch_{batch_num}/"):
+for img_info in annotations['images']:
+    if not img_info['file_name'].startswith(f"batch_{batch_num}/"):
         continue
 
-    image_path = os.path.join(subset_dir, image_info['file_name'])
-    image_id = image_info['id']
+    image_path = os.path.join(subset_dir, img_info['file_name'])
+    image_id = img_info['id']
 
     # Leer la imagen
     image = cv2.imread(image_path)
@@ -58,7 +60,7 @@ for image_info in annotations['images']:
         continue
     
     total_imagenes += 1
-    print(f"Procesando imagen: {image_path} (ID: {image_id})")
+    print(f"Procesando imagen: {img_info['file_name']} (ID: {image_id})")
 
     # Paso 2: Usar SIFT y Harris para Extraer los Descriptores
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -81,13 +83,13 @@ for image_info in annotations['images']:
     min_match_count = 10
 
     for data in knowledge_data:
-        for image_name, bbox_info in data.items():
+        for knowledge_img_name, knowledge_img_info in data.items():
             # Obtener los descriptores de cada bbox
-            for bbox in bbox_info.get("bboxes", []):
-                if "descriptors" not in bbox:
+            for bbox_info in knowledge_img_info.get("bboxes", []):
+                if "descriptors" not in bbox_info:
                     continue
 
-                knowledge_descriptors = np.array(bbox["descriptors"], dtype=np.float32)
+                knowledge_descriptors = np.array(bbox_info["descriptors"], dtype=np.float32)
 
                 # Comprobar si hay suficientes descriptores para hacer knnMatch con k=2
                 if len(knowledge_descriptors) < 2:
@@ -109,8 +111,8 @@ for image_info in annotations['images']:
                     # Actualizar la mejor coincidencia si es necesario
                     if score < best_score:
                         best_score = score
-                        best_match_supercategory = bbox.get("supercategory", "Unknown")
-                        best_match_name = bbox.get("name", "Unknown")
+                        best_match_supercategory = bbox_info.get("supercategory", "Unknown")
+                        best_match_name = bbox_info.get("name", "Unknown")
 
     # Paso 4: Comparar con las Anotaciones y Registrar Aciertos/Fallos
     for ann in annotations_for_image:
@@ -119,13 +121,21 @@ for image_info in annotations['images']:
 
         if best_match_supercategory == expected_supercategory and best_match_name == expected_name:
             total_aciertos += 1
+            print('Si hubo coincidencia')
         else:
             total_fallos += 1
+            print('NO hubo coincidencia')
 
-    print(f"Resultado para la imagen {image_path}: Mejor coincidencia - Supercategory: {best_match_supercategory}, Name: {best_match_name}")
+
+    print(f"Resultado para la imagen {img_info['file_name']}: Mejor coincidencia - Supercategory: {best_match_supercategory}, Name: {best_match_name}")
 
 # Mostrar estadísticas de rendimiento
+total_comparaciones = total_aciertos + total_fallos
 print(f"Total de imágenes procesadas: {total_imagenes}")
 print(f"Aciertos: {total_aciertos}")
 print(f"Fallos: {total_fallos}")
-print(f"Precisión: {(total_aciertos / total_imagenes) * 100:.2f}%")
+print(f"Total de comparaciones: {total_comparaciones}")
+if total_comparaciones > 0:
+    print(f"Precisión: {(total_aciertos / total_comparaciones) * 100:.2f}%")
+else:
+    print("No se realizaron comparaciones.")
