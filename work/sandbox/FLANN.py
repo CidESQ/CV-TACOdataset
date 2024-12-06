@@ -20,7 +20,7 @@ search_params = dict(checks=50)
 flann = cv2.FlannBasedMatcher(index_params, search_params)
 
 # Leer la nueva imagen que se quiere clasificar
-new_image_path = "../test_images/IMG_4878.JPG"  # Cambia esta ruta a la imagen que desees clasificar
+new_image_path = "../test_images/000103.JPG"  # Cambia esta ruta a la imagen que desees clasificar
 new_image = cv2.imread(new_image_path)
 
 if new_image is None:
@@ -45,7 +45,8 @@ else:
         # Variable para almacenar la mejor coincidencia
         best_match = None
         best_score = float('inf')  # Puntuación más baja significa mejor coincidencia
-        best_match_category = "Unknown"
+        best_match_supercategory = "Unknown"
+        best_match_name = "Unknown"
         min_match_count = 10  # Umbral mínimo para considerar una coincidencia como válida
 
         # Realizar matching con los descriptores de los bboxes en la base de conocimiento
@@ -75,17 +76,15 @@ else:
                     if len(good_matches) >= min_match_count:
                         score = sum([match.distance for match in good_matches]) / len(good_matches)
 
-                        # Depurar: Imprimir información sobre la cantidad de coincidencias encontradas y la puntuación
-                        print(f"Imagen: {image_name}, Coincidencias encontradas: {len(good_matches)}, Puntuación: {score}")
-
                         # Actualizar la mejor coincidencia si es necesario
                         if score < best_score:
                             best_score = score
                             best_match = image_name
-                            best_match_category = bbox_info.get("name", "Unknown")
+                            best_match_supercategory = bbox_info.get("supercategory", "Unknown")
+                            best_match_name = bbox_info.get("name", "Unknown")
 
         # Mostrar el resultado de la mejor coincidencia
         if best_match:
-            print(f"La mejor coincidencia es con la imagen '{best_match}' de la categoría '{best_match_category}' con puntuación {best_score}.")
+            print(f"En esta imagen hay '{best_match_name}' de la supercategoría '{best_match_supercategory}'.")
         else:
             print("No se encontraron buenas coincidencias.")
