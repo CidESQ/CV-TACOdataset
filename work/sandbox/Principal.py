@@ -20,7 +20,7 @@ search_params = dict(checks=50)
 flann = cv2.FlannBasedMatcher(index_params, search_params)
 
 # Leer la nueva imagen que se quiere clasificar
-new_image_path = "../test_images/000103.JPG"  # Cambia esta ruta a la imagen que desees clasificar
+new_image_path = "../test_images/test_1.JPG"  # Cambia esta ruta a la imagen que desees clasificar
 new_image = cv2.imread(new_image_path)
 
 if new_image is None:

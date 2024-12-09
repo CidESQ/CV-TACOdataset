@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 from pathlib import Path
 
+#Estadisticas para todos los batches
+
 # Rutas
 subset_dir = "../subset"
 knowledge_base_dir = "../knowledge_base"

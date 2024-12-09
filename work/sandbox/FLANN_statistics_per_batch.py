@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from pathlib import Path
 
-#Solo batch 1
+#Estadisticas solo por batch (batch 1)
 
 # Rutas
 subset_dir = "../subset"
